@@ -56,7 +56,7 @@ Copy the `env.template` file as `.env` and populate according to your environmen
 # Wordpress Settings
 export WORDPRESS_LOCAL_HOME=./wordpress
 export WORDPRESS_UPLOADS_CONFIG=./config/uploads.ini
-export WORDPRESS_DB_HOST=database:3306
+export WORDPRESS_DB_HOST=IP:3306
 export WORDPRESS_DB_NAME=wordpress
 export WORDPRESS_DB_USER=wordpress
 export WORDPRESS_DB_PASSWORD=password123!
@@ -88,7 +88,7 @@ server {
     server_name $host;
     location / {
         # update port as needed for host mapped https
-        rewrite ^ https://$host:8443$request_uri? permanent;
+        rewrite ^ https://$host$request_uri? permanent;
     }
 }
 
@@ -181,7 +181,7 @@ Once configured the containers can be brought up using Docker Compose
 2. Bring up the Database and allow it a moment to create the WordPress user and database tables
 
     ```console
-    docker-compose up -d database
+#    docker-compose up -d database
     ```
     
     You will know it's ready when you see something like this in the docker logs
@@ -213,6 +213,8 @@ Once configured the containers can be brought up using Docker Compose
 
     ```console
     docker-compose up -d wordpress nginx
+    docker stop wp-database
+    docker rm wp-database
     ```
     
     After a few moments the containers should be observed as running
@@ -220,8 +222,7 @@ Once configured the containers can be brought up using Docker Compose
     ```console
     $ docker-compose ps
     NAME                COMMAND                  SERVICE             STATUS              PORTS
-    wp-database         "docker-entrypoint.s…"   database            running             33060/tcp
-    wp-nginx            "/docker-entrypoint.…"   nginx               running             0.0.0.0:8080->80/tcp, 0.0.0.0:8443->443/tcp
+    wp-nginx            "/docker-entrypoint.…"   nginx               running             0.0.0.0:80->80/tcp, 0.0.0.0:443->443/tcp
     wp-wordpress        "docker-entrypoint.s…"   wordpress           running             9000/tcp
     ```
 
